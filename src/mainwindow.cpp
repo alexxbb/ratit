@@ -24,7 +24,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle(QString("DobroRAT %1").arg(QString("1.0.0")));
+    setWindowTitle(QString("RATit %1").arg(QString("1.0.0")));
     setWindowIcon(QIcon(":/icons/app_icon.gif"));
     setMinimumSize(820, 500);
     move(500,500);
@@ -51,10 +51,12 @@ MainWindow::MainWindow(QWidget *parent)
     btn_addFiles = new QPushButton("Add Files");
     btn_addFiles->setStatusTip("Add files to convert");
     btn_addFromFolder = new QPushButton("Add From Folder");
+    btn_about = new QPushButton("About");
     btn_addFromFolder->setStatusTip("Add all files from folder");
 
     myButtonsLayout->addWidget(btn_addFiles);
     myButtonsLayout->addWidget(btn_addFromFolder);
+    myButtonsLayout->addWidget(btn_about);
     myButtonsLayout->addStretch();
     myButtonsLayout->addWidget(btn_convert);
     myButtonsLayout->addWidget(btn_close);
@@ -66,6 +68,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(btn_addFiles, SIGNAL(clicked()), SLOT(cb_addFiles()));
     connect(btn_addFromFolder, SIGNAL(clicked()), SLOT(cb_addFromFolder()));
+    connect(btn_about, &QPushButton::clicked, [&](){
+        QMessageBox::information(this, "About RATit", "A simple, multithreaded converter to RAT file format\n"
+                                                "Alex Rusev<hou.alexx@gmail.com>");
+    });
     connect(btn_close, SIGNAL(clicked()), SLOT(close()));
     connect(btn_convert, SIGNAL(clicked()), SLOT(cb_startConvert()));
 
@@ -153,7 +159,7 @@ void MainWindow::cb_startConvert()
 {
     if(myDispatcherThread && myDispatcherThread->isRunning())
     {
-        qDebug() << "Running, terminating now....";
+        qDebug() << "Terminating dispatcher....";
         myDispatcher->terminate();
         return;
     }
@@ -171,7 +177,6 @@ void MainWindow::cb_startConvert()
     connect(myDispatcherThread, SIGNAL(finished()), myDispatcher, SLOT(deleteLater()));
 
     connect(myDispatcher, SIGNAL(terminated()), myDispatcherThread, SLOT(terminate()), Qt::DirectConnection);
-    connect(myDispatcher, SIGNAL(terminated()), this, SLOT(convertionTerminated()));
     connect(myDispatcher, SIGNAL(finished()), myDispatcherThread, SLOT(quit()));
 
     connect(myDispatcherThread, SIGNAL(finished()), myDispatcher, SLOT(deleteLater()));

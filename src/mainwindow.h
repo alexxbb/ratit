@@ -34,6 +34,7 @@ private:
     QPushButton *btn_addFromFolder;
     QPushButton *btn_convert;
     QPushButton *btn_close;
+    QPushButton *btn_about;
     TaskPanel *myTaskPanel;
     QString mySupportedFormatsString;
     QString buttonsStyle;
